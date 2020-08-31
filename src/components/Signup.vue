@@ -1,12 +1,16 @@
 <template>
   <div class="signup">
-    <h2>Sign up</h2>
-    <input type="text" placeholder="Username" v-model="username">
-    <input type="password" placeholder="Password" v-model="password">
-    <button @click="signUp">Resister</button>
-    <p>Do you have an account?
-      <router-link to="/signin">sign in now!!</router-link>
-    </p>
+    <div>
+      ユーザー名<input type="text" placeholder="Username" v-model="username">
+    </div>
+    <div>
+      メールアドレス<input type="email" placeholder="Email" v-model="email">
+    </div>
+    <div>
+      パスワード<input type="password" placeholder="Password" v-model="password">
+    </div>
+    <button @click="signUp">新規登録</button>
+    <router-link to="/signin">ログインはこちらから</router-link>
   </div>
 </template>
 
@@ -18,14 +22,19 @@ export default {
   data() {
     return {
       username: '',
+      email: '',
       password: ''
     }
   },
   methods: {
     signUp() {
-      firebase.auth().createUserWithEmailAndPassword(this.username, this.password)
-        .then(user => {
-          alert('Create account: ', user.email)
+      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+        .then((result) => {
+          result.user.updateProfile({
+            displayName: this.username
+          });
+          alert('ユーザー登録完了しました！！')
+          this.$router.push('/signin')
         })
         .catch(error => {
           alert(error.message)
@@ -36,10 +45,6 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-
 ul {
   list-style: none;
   padding: 0;
