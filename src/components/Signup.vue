@@ -52,4 +52,9 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+input {
+  margin: 10px;
+  padding: 10px;
+}
 </style>
