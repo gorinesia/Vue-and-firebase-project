@@ -1,6 +1,9 @@
 <template>
   <div class="signin">
     <div>
+      <img alt="Vue logo" src="../assets/logo.png">
+    </div>
+    <div>
       <h2>ログイン画面</h2>
     </div>
     <div>
@@ -12,12 +15,10 @@
       <input type="password" id="password" placeholder="Password" v-model="password">
     </div>
     <div>
-      <button @click="signIn">Signin</button>
+      <button @click="signIn">ログイン</button>
     </div>
     <div>
-      <p>You don't have an account?
-        <router-link to="/signup">create account now!!</router-link>
-      </p>
+      <router-link to="/signup">新規登録はこちらから</router-link>
     </div>
   </div>
 </template>
@@ -29,14 +30,13 @@ export default {
   name: 'Signin',
   data() {
     return {
-      username: '',
+      email: '',
       password: ''
     }
   },
   methods: {
     signIn() {
-      firebase.auth().signInWithEmailAndPassword(this.username, this.password).then(
-        user => {
+      firebase.auth().signInWithEmailAndPassword(this.username, this.password).then(user => {
           alert('Success!', user.email)
           this.$router.push('/')
         },

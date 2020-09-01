@@ -1,6 +1,12 @@
 <template>
   <div class="signup">
     <div>
+      <img alt="Vue logo" src="../assets/logo.png">
+    </div>
+    <div>
+      <h1>新規登録画面</h1>
+    </div>
+    <div>
       <label for="username">ユーザー名</label>
       <input type="text" id="username" placeholder="Username" v-model="username">
     </div>
@@ -13,7 +19,7 @@
       <input type="password" id="password" placeholder="Password" v-model="password">
     </div>
     <button @click="signUp">新規登録</button>
-    <router-link to="/signin">ログインはこちらから</router-link>
+    <router-link to="/">ログインはこちらから</router-link>
   </div>
 </template>
 
