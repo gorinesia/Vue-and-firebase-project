@@ -1,13 +1,16 @@
 <template>
   <div class="signup">
     <div>
-      ユーザー名<input type="text" placeholder="Username" v-model="username">
+      <label for="username">ユーザー名</label>
+      <input type="text" id="username" placeholder="Username" v-model="username">
     </div>
     <div>
-      メールアドレス<input type="email" placeholder="Email" v-model="email">
+      <label for="email">メールアドレス</label>
+      <input type="email" id="email" placeholder="Email" v-model="email">
     </div>
     <div>
-      パスワード<input type="password" placeholder="Password" v-model="password">
+      <label for="password">パスワード</label>
+      <input type="password" id="password" placeholder="Password" v-model="password">
     </div>
     <button @click="signUp">新規登録</button>
     <router-link to="/signin">ログインはこちらから</router-link>

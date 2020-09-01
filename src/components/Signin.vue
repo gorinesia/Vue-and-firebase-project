@@ -1,12 +1,24 @@
 <template>
   <div class="signin">
-    <h2>Sign in</h2>
-    <input type="text" placeholder="Username" v-model="username">
-    <input type="password" placeholder="Password" v-model="password">
-    <button @click="signIn">Signin</button>
-    <p>You don't have an account?
-      <router-link to="/signup">create account now!!</router-link>
-    </p>
+    <div>
+      <h2>ログイン画面</h2>
+    </div>
+    <div>
+      <label for="email">メールアドレス</label>
+      <input type="email" id="email" placeholder="Email" v-model="email">
+    </div>
+    <div>
+      <label for="password">パスワード</label>
+      <input type="password" id="password" placeholder="Password" v-model="password">
+    </div>
+    <div>
+      <button @click="signIn">Signin</button>
+    </div>
+    <div>
+      <p>You don't have an account?
+        <router-link to="/signup">create account now!!</router-link>
+      </p>
+    </div>
   </div>
 </template>
 
