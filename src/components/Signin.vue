@@ -1,18 +1,22 @@
 <template>
   <div class="signin">
     <div>
-      <img alt="Vue logo" src="../assets/logo.png">
+      <img alt="Vue logo" src="../assets/logo.png" />
     </div>
     <div>
       <h2>ログイン画面</h2>
     </div>
     <div>
-      <label for="email">メールアドレス</label>
-      <input type="email" id="email" placeholder="Email" v-model="email">
-    </div>
-    <div>
-      <label for="password">パスワード</label>
-      <input type="password" id="password" placeholder="Password" v-model="password">
+      <form>
+        <div>
+          <label for="email">メールアドレス</label>
+          <input type="email" id="email" placeholder="Email" v-model="email" />
+        </div>
+        <div>
+          <label for="password">パスワード</label>
+          <input type="password" id="password" placeholder="Password" v-model="password" />
+        </div>
+      </form>
     </div>
     <div>
       <button @click="signIn">ログイン</button>
@@ -24,29 +28,23 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-
 export default {
-  name: 'Signin',
+  name: "Signin",
   data() {
     return {
-      email: '',
-      password: ''
-    }
+      email: "",
+      password: "",
+    };
   },
   methods: {
     signIn() {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(user => {
-          alert('Success!', user.email)
-          this.$router.push('/home')
-        },
-        error => {
-          alert(error.message)
-        }
-      )
-    }
-  }
-}
+      this.$store.dispatch("signInAction", {
+        email: this.email,
+        password: this.password,
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
