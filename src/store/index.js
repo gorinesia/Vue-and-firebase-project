@@ -32,7 +32,6 @@ export default new Vuex.Store({
           })
           commit('setName', payload)
           commit('setUser', result.user.uid)
-          commit('setError', null)
           router.push('/signin')
         })
         .catch((error) => {
@@ -43,7 +42,6 @@ export default new Vuex.Store({
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
         .then((response) => {
           commit('setUser', response.user.uid)
-          commit('setError', null)
           router.push('/home')
         })
         .catch((error) => {
