@@ -25,17 +25,17 @@
 
 <script>
 export default {
-  name: "Signup",
+  name: 'Signup',
   data() {
     return {
-      displayName: "",
-      email: "",
-      password: "",
+      displayName: '',
+      email: '',
+      password: '',
     };
   },
   methods: {
     signUp() {
-      this.$store.dispatch("signUpAction", {
+      this.$store.dispatch('signUpAction', {
         displayName: this.displayName,
         email: this.email,
         password: this.password,

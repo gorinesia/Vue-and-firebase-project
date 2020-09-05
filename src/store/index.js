@@ -9,22 +9,17 @@ export default new Vuex.Store({
   state: {
     displayName: '',
     user: null,
-    error: null
   },
-  mutations: {
+    mutations: {
     setName(state, payload) {
       state.displayName = payload.displayName
     },
     setUser(state, user) {
       state.user = user
-    },
-    setError(state, payload) {
-      state.error = payload;
     }
   },
   actions: {
     signUpAction({commit}, payload) {
-      console.log(payload)
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
         .then((result) => {
           result.user.updateProfile({
@@ -35,17 +30,17 @@ export default new Vuex.Store({
           router.push('/signin')
         })
         .catch((error) => {
-          commit('setError', error.message)
+          console.log(error.message)
         })
     },
     signInAction({commit}, payload) {
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-        .then((response) => {
-          commit('setUser', response.user.uid)
+        .then((result) => {
+          commit('setUser', result.user.uid)
           router.push('/home')
         })
         .catch((error) => {
-          commit('setError', error.message)
+          console.log(error.message)
         })
     },
     signOutAction() {

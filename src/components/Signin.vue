@@ -29,16 +29,16 @@
 
 <script>
 export default {
-  name: "Signin",
+  name: 'Signin',
   data() {
     return {
-      email: "",
-      password: "",
+      email: '',
+      password: ''
     };
   },
   methods: {
     signIn() {
-      this.$store.dispatch("signInAction", {
+      this.$store.dispatch('signInAction', {
         email: this.email,
         password: this.password,
       });
