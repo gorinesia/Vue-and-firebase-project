@@ -10,13 +10,13 @@ export default new Vuex.Store({
     displayName: '',
     user: null,
   },
-    mutations: {
-    setName(state, payload) {
-      state.displayName = payload.displayName
-    },
-    setUser(state, user) {
-      state.user = user
-    }
+  mutations: {
+  setName(state, payload) {
+    state.displayName = payload.displayName
+  },
+  setUser(state, user) {
+    state.user = user
+  }
   },
   actions: {
     signUpAction({commit}, payload) {
