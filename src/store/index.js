@@ -7,13 +7,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    displayName: '',
+    // displayName: '',
     user: null,
   },
   mutations: {
-    setName(state, payload) {
-      state.displayName = payload.displayName
-    },
+    // setName(state, payload) {
+    //   state.displayName = payload.displayName
+    // },
     setUser(state, user) {
       state.user = user
     }
@@ -25,7 +25,7 @@ export default new Vuex.Store({
           result.user.updateProfile({
             displayName: payload.displayName
           })
-          commit('setName', payload)
+          // commit('setName', payload)
           commit('setUser', result.user.uid)
           router.push('/signin')
         })
