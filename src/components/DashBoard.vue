@@ -5,6 +5,7 @@
     </div>
     <div>
       <h2>こんにちは {{ name }} さん</h2>
+      <p>残高: {{ barance }} 円</p>
     </div>
     <div>
       <button @click="signOut">サインアウト</button>
@@ -27,6 +28,7 @@ export default {
   data() {
     return {
       name: '',
+      barance: '',
       currentUser: {},
       loginUsers: [],
     };
@@ -42,8 +44,9 @@ export default {
         const otherUsers = [];
         snapshot.forEach(doc => {
           otherUsers.push(doc.data().displayName)
-          console.log(doc.id, '=>', doc.data().displayName);
+          console.log(doc.id, '=>', doc.data());
           this.loginUsers = otherUsers
+          this.barance = doc.data().wallet;
       })
     })
   },

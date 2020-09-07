@@ -42,7 +42,8 @@ export default {
       const saveData = {
         displayName: this.displayName,
         email: this.email,
-        password: this.password
+        password: this.password,
+        wallet: 500
       }
 
       colref.add(saveData).then((docRef) => {
