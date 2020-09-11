@@ -11,9 +11,13 @@
       <button @click="signOut">サインアウト</button>
     </div>
     <div>
+      <button @click="updateButton">更新</button>
+      <button @click="confirmButton">確認</button>
+    </div>
+    <div>
       <hr>
       <ul>ユーザー名
-        <li v-for="user in loginUsers" :key=user>
+        <li v-for="(user, index) in loginUsers" :key="index">
           {{ user }} <button>walletを見る</button><button>送る</button>
         </li>
       </ul>
@@ -43,8 +47,9 @@ export default {
       .then((snapshot) => {
         const otherUsers = [];
         snapshot.forEach(doc => {
-          otherUsers.push(doc.data().displayName)
-          console.log(doc.id, '=>', doc.data());
+          // otherUsers.push(doc.data().displayName)
+          otherUsers.push(doc.data())
+          // console.log(doc.id, '=>', doc.data());
           this.loginUsers = otherUsers
           this.barance = doc.data().wallet;
       })
@@ -54,6 +59,38 @@ export default {
     signOut() {
       this.$store.dispatch("signOutAction");
     },
+    async updateButton() {
+      const db = firebase.firestore();
+      // await db.collection('users').add({
+      //   wallet: null
+      // })
+      // .then(doc => {
+      //   console.log(doc)
+      //   db.collection('users').doc(doc.id).update({
+      //     wallet: doc.id
+      //   })
+      // })
+
+      await db.collection('users').doc('vs2GqF2uG9CkAKZq6ECq').update({
+        wallet: 7770
+      })
+      // .then
+      // await db.collection('users').doc('vs2GqF2uG9CkAKZq6ECq')
+      // .onSnapshot((doc) => {
+      //   console.log('Current data: ', doc.data());
+      // })
+    },
+    async confirmButton() {
+      const db = firebase.firestore();
+      await db.collection('users').onSnapshot((querySnapshot) => {
+        console.log('追加！！！！');
+        console.log(querySnapshot)
+        querySnapshot.forEach(doc => {
+          console.log(doc.id, doc.data());
+          console.log('--------------');
+        })
+      })
+    }
   },
 };
 </script>

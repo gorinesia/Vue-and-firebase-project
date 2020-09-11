@@ -32,15 +32,17 @@ export default new Vuex.Store({
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
         .then((result) => {
           commit('setUser', result.user.uid)
+          console.log(result)
           router.push('/dashBoard')
         })
         .catch((error) => {
           console.log(error.message)
         })
     },
-    signOutAction() {
+    signOutAction({commit}) {
       firebase.auth().signOut()
         .then(() => {
+          commit('setUser', null)
           router.push('signin')
         })
     },
