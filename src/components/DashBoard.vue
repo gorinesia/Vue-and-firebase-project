@@ -4,7 +4,7 @@
       <img alt="Vue logo" src="../assets/logo.png" />
     </div>
     <div>
-      <h2>こんにちは {{ name }} さん</h2>
+      <h2>こんにちは {{ displayName }} さん</h2>
       <p>残高: {{ barance }} 円</p>
     </div>
     <div>
@@ -22,37 +22,19 @@
 </template>
 
 <script>
-// import firebase from 'firebase'
-
 export default {
   data() {
     return {
-      name: this.$store.state.name,
+      displayName: this.$store.state.displayName,
       barance: this.$store.state.barance,
-      // currentUser: {},
       currentUser: this.$store.state.currentUser,
       loginUsers: this.$store.state.loginUsers,
     };
   },
-  async mounted() {
+  async created() {
     await this.$store.dispatch('createdUser', {
-      displayName: this.$store.state.currentUser.displayName,
-      // barance: this.barance
-    })
-    // this.currentUser = firebase.auth().currentUser;
-    // this.name = this.currentUser.displayName;
-    // const db = firebase.firestore();
-    // db.collection('users')
-    //   .where('displayName', '!=', this.currentUser.displayName)
-    //   .get()
-    //   .then((snapshot) => {
-    //     const otherUsers = [];
-    //     snapshot.forEach(doc => {
-    //       otherUsers.push(doc.data())
-    //       this.loginUsers = otherUsers
-    //       this.barance = doc.data().wallet;
-    //   })
-    // })
+      displayName: this.displayName,
+    });
   },
   methods: {
     signOut() {

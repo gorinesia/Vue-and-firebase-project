@@ -24,8 +24,6 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-
 export default {
   name: 'Signup',
   data() {
@@ -37,25 +35,11 @@ export default {
   },
   methods: {
     signUp() {
-      const colref = firebase.firestore().collection('users');
-
-      const saveData = {
-        displayName: this.displayName,
-        email: this.email,
-        password: this.password,
-        wallet: 500
-      }
-
-      colref.add(saveData).then((docRef) => {
-        console.log(docRef.id)
-      }).catch((error) => {
-        console.log(error)
-      })
-
       this.$store.dispatch('signUpAction', {
         displayName: this.displayName,
         email: this.email,
         password: this.password,
+        wallet: 500
       });
     },
   },
