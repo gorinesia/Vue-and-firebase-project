@@ -1,28 +1,36 @@
 <template>
-  <div id="app">
-    <router-view/>
-  </div>
+  <v-app>
+    <HelloWorld />
+    <router-view />
+    <!-- <v-card width="400px" class="mx-auto mt-5">
+      <v-card-title>
+        <h1 class="display-1">ログイン</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-form>
+          <v-text-field prepend-icon="mdi-account-circle" label="ユーザー名" />
+          <v-text-field :type="showPassword ? 'text' : 'password'" prepend-icon="mdi-lock" append-icon="mdi-eye-off" label="パスワード" @click:append="showPassword = !showPassword" />
+          <v-card-actions>
+            <v-btn class="info">ログイン</v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card-text>
+    </v-card> -->
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import HelloWorld from './components/HelloWorld';
 
-#nav {
-  padding: 30px;
-}
+export default {
+  name: 'App',
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+  components: {
+    HelloWorld,
+  },
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+  data: () => ({
+    showPassword: false
+  }),
+};
+</script>

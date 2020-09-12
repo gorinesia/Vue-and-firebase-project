@@ -3,18 +3,16 @@ import VueRouter from 'vue-router'
 import DashBoard from '@/components/DashBoard.vue'
 import Signup from '@/components/Signup.vue'
 import Signin from '@/components/Signin.vue'
-import Works from '@/components/Works.vue'
-import Modal from '@/components/Modal.vue'
 import ModalModel from '@/components/ModalModel.vue'
 import firebase from 'firebase'
 
 Vue.use(VueRouter)
 
   const routes = [
-    // {
-    //   path: '*',
-    //   redirect: 'signin',
-    // },
+    {
+      path: '*',
+      redirect: 'signin',
+    },
     {
       path: '/dashBoard',
       name: 'DashBoard',
@@ -30,16 +28,6 @@ Vue.use(VueRouter)
       path: '/signin',
       name: 'Signin',
       component: Signin
-    },
-    {
-      path: '/works',
-      name: 'Works',
-      component: Works
-    },
-    {
-      path: '/modal',
-      name: 'Modal',
-      component: Modal
     },
     {
       path: '/modalModel',

@@ -1,39 +1,53 @@
 <template>
-  <div>
-    <div>
-      <img alt="Vue logo" src="../assets/logo.png" />
-    </div>
-    <div>
-      <h2>こんにちは {{ name }} さん</h2>
-      <p>残高: {{ barance }} 円</p>
-    </div>
-    <div>
-      <button @click="signOut">サインアウト</button>
-    </div>
-    <div>
-      <div>
-        <h2>ユーザー一覧</h2>
-      </div>
-      <div>
-        <h3>ユーザー名</h3>
-        <ul>
-          <li v-for="user in loginUsers" :key="user">
-            {{ user }}
-            <button @click="openModal">walletを見る</button>
-            <div id="overlay" v-show="showContent" @click="closeModal">
-              <div id="content">
-                <p>あなたの残高: {{ barance }}</p>
-                <p>送る金額</p>
-                <input type="text" />
-                <button @click="closeModal">送信</button>
+  <v-app>
+    <v-container>
+      <v-row>
+        <v-col cols="8">
+          <h2> {{ name }} さんようこそ！！</h2>
+        </v-col>
+        <v-col cols="2">
+          <p>残高: {{ barance }} 円</p>
+        </v-col>
+        <v-col cols="2">
+          <v-card-actions>
+            <v-btn class="info" @click="signOut">サインアウト</v-btn>
+        </v-card-actions>
+        </v-col>
+      </v-row>
+
+      <h2 style="text-align: center">ユーザー一覧</h2>
+
+      <h3>ユーザー名</h3>
+      <ul>
+        <li v-for="user in loginUsers" :key="user">
+          <v-row>
+            <v-col cols="7">
+              {{ user }}
+            </v-col>
+            <v-cols cols="5">
+                <v-btn @click="openModal">walletを見る</v-btn>
+              <div id="overlay" v-show="showContent" @click="closeModal">
+                <div id="content">
+                  <p>あなたの残高: {{ barance }}</p>
+                  <p>送る金額</p>
+                  <input type="text" />
+                  <button @click="closeModal">送信</button>
+                </div>
               </div>
-            </div>
-            <button>送る</button>
-          </li>
-        </ul>
+              <v-btn>送る</v-btn>
+            </v-cols>
+          </v-row>
+        </li>
+      </ul>
+
+      <br>
+      <div>
+        <footer>
+          <p style="text-align: center;">Copyright &copy;2019 Inc. All rights reserved</p>
+        </footer>
       </div>
-    </div>
-  </div>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
@@ -61,7 +75,6 @@ export default {
         snapshot.forEach((doc) => {
           otherUsers.push(doc.data().displayName);
           console.log(doc.data());
-          // console.log(doc.id, '=>', doc.data());
           this.loginUsers = otherUsers;
           this.barance = doc.data().wallet;
         });
@@ -82,6 +95,10 @@ export default {
 </script>
 
 <style scoped>
+v-btn {
+  margin: 1px;
+}
+
 li {
   list-style: none;
 }
