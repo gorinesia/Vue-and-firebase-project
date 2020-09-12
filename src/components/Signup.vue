@@ -19,7 +19,7 @@
       <input type="password" id="password" placeholder="Password" v-model="password" />
     </div>
     <button @click="signUp">新規登録</button>
-    <router-link to="/">ログインはこちらから</router-link>
+    <router-link to="/signin">ログインはこちらから</router-link>
   </div>
 </template>
 
