@@ -18,6 +18,7 @@ export default new Vuex.Store({
     signUpAction({commit}, payload) {
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
         .then((result) => {
+          console.log(result.user.uid)
           result.user.updateProfile({
             displayName: payload.displayName
           })
