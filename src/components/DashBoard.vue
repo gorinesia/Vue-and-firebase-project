@@ -1,18 +1,18 @@
 <template>
   <v-app>
     <v-container>
-      <v-row>
+      <v-row v-for="getUser in getUsers3" :key="getUser.id">
         <v-col cols="4">
-          <h2> {{ name }} さんようこそ！！</h2>
+          <h2> {{ getUser.displayName }} さんようこそ！！</h2>
         </v-col>
         <v-col cols="2">
           <v-btn class="teal" @click="updateWalletAmount">更新</v-btn>
         </v-col>
         <v-col cols="2">
-          <v-btn class="cyan" @click="catchChangingWalletAmount">取得</v-btn>
+          <!-- <v-btn class="cyan" @click="catchChangingWalletAmount">取得</v-btn> -->
         </v-col>
         <v-col cols="2">
-          <p>残高: {{ barance }} 円</p>
+          <p>残高: {{ getUser.newBarance }} 円</p>
         </v-col>
         <v-col cols="2">
           <v-card-actions>
@@ -25,7 +25,7 @@
 
       <h3 style="margin-left: 20px;">ユーザー名</h3>
       <ul>
-        <li v-for="getUser in getUsers" :key="getUser.id">
+        <li v-for="getUser in getUsers2" :key="getUser.id">
           <v-row>
             <v-col cols="1">
               <div></div>
@@ -82,32 +82,58 @@ export default {
       showContent2: false,
       postUser: '',
       postBarance: '',
-      getUsers: []
+      getUsers: [],
+      getUsers2: [],
+      getUsers3: []
     };
   },
-  created() {
+  // created() {
+  //   this.currentUser = firebase.auth().currentUser;
+  //   this.name = this.currentUser.displayName;
+  //   const db = firebase.firestore();
+  //   db.collection("users")
+  //     .where("displayName", "!=", this.currentUser.displayName)
+  //     .get()
+  //     .then((snapshot) => {
+  //       const otherUsers = [];
+  //       snapshot.forEach((doc)  => {
+  //         otherUsers.push(doc.data().displayName);
+  //         this.loginUsers = otherUsers;
+  //         this.barance = doc.data().wallet;
+  //       });
+  //     });
+      
+  // },
+  mounted() {
     this.currentUser = firebase.auth().currentUser;
+    console.log(firebase.auth().currentUser)
     this.name = this.currentUser.displayName;
     const db = firebase.firestore();
-    db.collection("users")
-      .where("displayName", "!=", this.currentUser.displayName)
-      .get()
-      .then((snapshot) => {
-        const otherUsers = [];
-        snapshot.forEach((doc)  => {
-          otherUsers.push(doc.data().displayName);
-          this.loginUsers = otherUsers;
-          this.barance = doc.data().wallet;
-        });
-      });
-      
+    db.collection('users')
+      // .where("displayName", "!=", this.currentUser.displayName)
+      .onSnapshot((querySnapshot) => {
+        this.getUsers = [];
+        querySnapshot.forEach((doc) => {
+          // console.log(doc.data().displayName);
+          this.getUsers.push({
+            id: doc.id,
+            displayName: doc.data().displayName,
+            newBarance: doc.data().wallet
+          })
+          this.getUsers2 = this.getUsers.filter((getUser) => {
+            return getUser.displayName != this.currentUser.displayName
+          })
+          this.getUsers3 = this.getUsers.filter((getUser) => {
+            return getUser.displayName === this.currentUser.displayName
+          })
+        })
+      })
   },
   methods: {
     signOut() {
       this.$store.dispatch("signOutAction");
     },
     openModal(id, barance) {
-      console.log(barance)
       this.showContent = true;
       this.postUser = id
       this.postBarance = barance
@@ -123,25 +149,8 @@ export default {
     },
     updateWalletAmount() {
       const db = firebase.firestore();
-      db.collection('users').doc("1FVhYRGLfiKD1MTbhAmm").update({
-        wallet: 500 + 3000
-      })
-    },
-    catchChangingWalletAmount() {
-    const db = firebase.firestore();
-    db.collection('users')
-      .where("displayName", "!=", this.currentUser.displayName)
-      .onSnapshot((querySnapshot) => {
-        console.log('検知!!!!');
-        this.getUsers = [];
-        querySnapshot.forEach((doc) => {
-          console.log(doc.data().wallet);
-          this.getUsers.push({
-            id: doc.id,
-            displayName: doc.data().displayName,
-            newBarance: doc.data().wallet
-          })
-        })
+      db.collection('users').doc("VzzrQblqmfMpBPgtaV5q").update({
+        wallet: 500 + 2000
       })
     }
   }
