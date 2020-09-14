@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/components/Home.vue'
+import DashBoard from '@/components/DashBoard.vue'
 import Signup from '@/components/Signup.vue'
 import Signin from '@/components/Signin.vue'
+import firebase from 'firebase'
 
 Vue.use(VueRouter)
 
@@ -12,9 +13,10 @@ Vue.use(VueRouter)
       redirect: 'signin',
     },
     {
-      path: '/home',
-      name: 'Home',
-      component: Home
+      path: '/dashBoard',
+      name: 'DashBoard',
+      component: DashBoard,
+      meta: { requiresAuth: true }
     },
     {
       path: '/signup',
@@ -32,6 +34,21 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  if (requiresAuth) {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        next()
+      } else {
+        next({ name: 'Signin' })
+      }
+    })
+  } else {
+    next();
+  }
 })
 
 export default router

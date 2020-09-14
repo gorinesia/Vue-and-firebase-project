@@ -39,6 +39,7 @@ export default {
         displayName: this.displayName,
         email: this.email,
         password: this.password,
+        wallet: 500
       });
     },
   },
