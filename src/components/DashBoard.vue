@@ -2,8 +2,14 @@
   <v-app>
     <v-container>
       <v-row>
-        <v-col cols="8">
+        <v-col cols="4">
           <h2> {{ name }} さんようこそ！！</h2>
+        </v-col>
+        <v-col cols="2">
+          <v-btn class="teal" @click="updateWalletAmount">更新</v-btn>
+        </v-col>
+        <v-col cols="2">
+          <v-btn class="cyan" @click="catchChangingWalletAmount">取得</v-btn>
         </v-col>
         <v-col cols="2">
           <p>残高: {{ barance }} 円</p>
@@ -17,25 +23,37 @@
 
       <h2 style="text-align: center">ユーザー一覧</h2>
 
-      <h3>ユーザー名</h3>
+      <h3 style="margin-left: 20px;">ユーザー名</h3>
       <ul>
-        <li v-for="user in loginUsers" :key="user">
+        <li v-for="getUser in getUsers" :key="getUser.id">
           <v-row>
-            <v-col cols="7">
-              {{ user }}
+            <v-col cols="1">
+              <div></div>
             </v-col>
-            <v-cols cols="5">
-                <v-btn @click="openModal">walletを見る</v-btn>
-              <div id="overlay" v-show="showContent" @click="closeModal">
+            <v-col cols="6">
+              <p>{{ getUser.displayName }}</p>
+            </v-col>
+            <v-col cols="5">
+              <v-btn class="primary mr-2" @click="openModal(getUser.displayName, getUser.newBarance)" >walletを見る</v-btn>
+                <div id="overlay" v-show="showContent" @click="closeModal">
+                  <div id="content">
+                    <v-form>
+                      <div>{{ postUser }}の残高: {{ postBarance }}</div>
+                      <v-btn small class="primary" >close</v-btn>
+                    </v-form>
+                  </div>
+              </div>
+              <v-btn class="accent" @click="openModal2">送る</v-btn>
+              <div id="overlay" v-show="showContent2" @click="closeModal2">
                 <div id="content">
-                  <p>あなたの残高: {{ barance }}</p>
-                  <p>送る金額</p>
-                  <input type="text" />
-                  <button @click="closeModal">送信</button>
+                  <v-form>
+                    <p>あなたの残高: {{ barance }}</p>
+                    <v-text-field type="number" label="送る金額" />
+                    <v-btn small class="primary" >送信</v-btn>
+                  </v-form>
                 </div>
               </div>
-              <v-btn>送る</v-btn>
-            </v-cols>
+            </v-col>
           </v-row>
         </li>
       </ul>
@@ -61,6 +79,10 @@ export default {
       currentUser: {},
       loginUsers: [],
       showContent: false,
+      showContent2: false,
+      postUser: '',
+      postBarance: '',
+      getUsers: []
     };
   },
   created() {
@@ -72,26 +94,58 @@ export default {
       .get()
       .then((snapshot) => {
         const otherUsers = [];
-        snapshot.forEach((doc) => {
+        snapshot.forEach((doc)  => {
           otherUsers.push(doc.data().displayName);
-          console.log(doc.data());
           this.loginUsers = otherUsers;
           this.barance = doc.data().wallet;
         });
       });
+      
   },
   methods: {
     signOut() {
       this.$store.dispatch("signOutAction");
     },
-    openModal() {
+    openModal(id, barance) {
+      console.log(barance)
       this.showContent = true;
+      this.postUser = id
+      this.postBarance = barance
     },
     closeModal() {
       this.showContent = false;
     },
-  },
-};
+    openModal2() {
+      this.showContent2 = true;
+    },
+    closeModal2() {
+      this.showContent2 = false;
+    },
+    updateWalletAmount() {
+      const db = firebase.firestore();
+      db.collection('users').doc("1FVhYRGLfiKD1MTbhAmm").update({
+        wallet: 500 + 3000
+      })
+    },
+    catchChangingWalletAmount() {
+    const db = firebase.firestore();
+    db.collection('users')
+      .where("displayName", "!=", this.currentUser.displayName)
+      .onSnapshot((querySnapshot) => {
+        console.log('検知!!!!');
+        this.getUsers = [];
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data().wallet);
+          this.getUsers.push({
+            id: doc.id,
+            displayName: doc.data().displayName,
+            newBarance: doc.data().wallet
+          })
+        })
+      })
+    }
+  }
+}
 </script>
 
 <style scoped>
