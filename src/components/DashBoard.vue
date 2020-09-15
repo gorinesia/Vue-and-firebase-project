@@ -26,13 +26,15 @@ export default {
   data() {
     return {
       displayName: this.$store.state.displayName,
-      barance: this.$store.state.barance,
       currentUser: this.$store.state.currentUser,
     };
   },
   computed: {
     loginUsers() {
       return this.$store.getters.loginUsers 
+    },
+    barance() {
+      return this.$store.state.barance
     }
   },
   created() {
