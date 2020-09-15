@@ -1,23 +1,21 @@
 <template>
   <v-app>
     <v-container>
-      <v-row v-for="getUser in getUsers3" :key="getUser.id">
+      <v-row v-for="item in getUsers3" :key="item.id">
         <v-col cols="4">
-          <h2> {{ getUser.displayName }} さんようこそ！！</h2>
+          <h2>{{ item.displayName }} さんようこそ！！</h2>
         </v-col>
         <v-col cols="2">
-          <v-btn class="teal" @click="updateWalletAmount">更新</v-btn>
         </v-col>
         <v-col cols="2">
-          <!-- <v-btn class="cyan" @click="catchChangingWalletAmount">取得</v-btn> -->
         </v-col>
         <v-col cols="2">
-          <p>残高: {{ getUser.newBarance }} 円</p>
+          <p>残高: {{ item.newBarance }} 円</p>
         </v-col>
         <v-col cols="2">
           <v-card-actions>
             <v-btn class="info" @click="signOut">サインアウト</v-btn>
-        </v-card-actions>
+          </v-card-actions>
         </v-col>
       </v-row>
 
@@ -34,22 +32,25 @@
               <p>{{ getUser.displayName }}</p>
             </v-col>
             <v-col cols="5">
-              <v-btn class="primary mr-2" @click="openModal(getUser.displayName, getUser.newBarance)" >walletを見る</v-btn>
-                <div id="overlay" v-show="showContent" @click="closeModal">
-                  <div id="content">
-                    <v-form>
-                      <div>{{ postUser }}の残高: {{ postBarance }}</div>
-                      <v-btn small class="primary" >close</v-btn>
-                    </v-form>
-                  </div>
-              </div>
-              <v-btn class="accent" @click="openModal2">送る</v-btn>
-              <div id="overlay" v-show="showContent2" @click="closeModal2">
+              <v-btn
+                class="primary mr-2"
+                @click="getWalletAmount(getUser.displayName, getUser.newBarance, getUser.id)"
+              >walletを見る</v-btn>
+              <div id="overlay" v-show="showContent" >
                 <div id="content">
                   <v-form>
-                    <p>あなたの残高: {{ barance }}</p>
-                    <v-text-field type="number" label="送る金額" />
-                    <v-btn small class="primary" >送信</v-btn>
+                    <div>{{ postUser }}の残高: {{ postBarance }}</div>
+                    <v-btn small class="red mr-2" @click="closeModal">close</v-btn>
+                  </v-form>
+                </div>
+              </div>
+              <v-btn class="accent" @click="openModal2">送る</v-btn>
+              <div id="overlay" v-show="showContent2" v-for="item in getUsers3" :key="item.id">
+                <div id="content">
+                  <v-form>
+                    <p>あなたの残高: {{ item.newBarance }}</p>
+                    <v-text-field type="number" label="送る金額" v-model.number="inputAmount" />
+                    <v-btn small class="primary mr-2" @click="updateWalletAmount(item.id, item.newBarance)">送信</v-btn>
                   </v-form>
                 </div>
               </div>
@@ -58,7 +59,7 @@
         </li>
       </ul>
 
-      <br>
+      <br />
       <div>
         <footer>
           <p style="text-align: center;">Copyright &copy;2019 Inc. All rights reserved</p>
@@ -74,69 +75,50 @@ import firebase from "firebase";
 export default {
   data() {
     return {
-      name: "",
-      barance: "",
       currentUser: {},
-      loginUsers: [],
       showContent: false,
       showContent2: false,
-      postUser: '',
-      postBarance: '',
+      postUser: "",
+      postBarance: "",
+      postId: '',
       getUsers: [],
       getUsers2: [],
-      getUsers3: []
+      getUsers3: [],
+      inputAmount: 0,
     };
   },
-  // created() {
-  //   this.currentUser = firebase.auth().currentUser;
-  //   this.name = this.currentUser.displayName;
-  //   const db = firebase.firestore();
-  //   db.collection("users")
-  //     .where("displayName", "!=", this.currentUser.displayName)
-  //     .get()
-  //     .then((snapshot) => {
-  //       const otherUsers = [];
-  //       snapshot.forEach((doc)  => {
-  //         otherUsers.push(doc.data().displayName);
-  //         this.loginUsers = otherUsers;
-  //         this.barance = doc.data().wallet;
-  //       });
-  //     });
-      
-  // },
   mounted() {
     this.currentUser = firebase.auth().currentUser;
-    console.log(firebase.auth().currentUser)
-    this.name = this.currentUser.displayName;
     const db = firebase.firestore();
-    db.collection('users')
-      // .where("displayName", "!=", this.currentUser.displayName)
-      .onSnapshot((querySnapshot) => {
-        this.getUsers = [];
-        querySnapshot.forEach((doc) => {
-          // console.log(doc.data().displayName);
-          this.getUsers.push({
-            id: doc.id,
-            displayName: doc.data().displayName,
-            newBarance: doc.data().wallet
-          })
-          this.getUsers2 = this.getUsers.filter((getUser) => {
-            return getUser.displayName != this.currentUser.displayName
-          })
-          this.getUsers3 = this.getUsers.filter((getUser) => {
-            return getUser.displayName === this.currentUser.displayName
-          })
-        })
-      })
+    db.collection("users").onSnapshot((querySnapshot) => {
+      this.getUsers = [];
+      querySnapshot.forEach((doc) => {
+        this.getUsers.push({
+          id: doc.id,
+          displayName: doc.data().displayName,
+          newBarance: doc.data().wallet,
+        });
+        this.getUsers2 = this.getUsers.filter((getUser) => {
+          return getUser.displayName != this.currentUser.displayName;
+        });
+        this.getUsers3 = this.getUsers.filter((item) => {
+          return item.displayName === this.currentUser.displayName;
+        });
+      });
+    });
   },
   methods: {
     signOut() {
       this.$store.dispatch("signOutAction");
     },
-    openModal(id, barance) {
+    showOwnPrice(name, barance, id) {
+      this.openModal()
+      this.postUser = name;
+      this.postBarance = barance;
+      this.postId= id;
+    },
+    openModal() {
       this.showContent = true;
-      this.postUser = id
-      this.postBarance = barance
     },
     closeModal() {
       this.showContent = false;
@@ -147,14 +129,33 @@ export default {
     closeModal2() {
       this.showContent2 = false;
     },
-    updateWalletAmount() {
+    updateWalletAmount(id,number) {
+      console.log(id, number);
       const db = firebase.firestore();
-      db.collection('users').doc("VzzrQblqmfMpBPgtaV5q").update({
-        wallet: 500 + 2000
-      })
+      db.collection("users")
+        .doc(id)
+        .update({
+          wallet: number - this.inputAmount,
+        });
+      this.closeModal2();
+    },
+    getWalletAmount(name, barance, id) {
+      console.log(name, barance, id)
+      const str = parseInt(barance, 10)
+      console.log(str)
+      const newData = {};
+      newData['wallet'] = (str + this.inputAmount)
+      const db = firebase.firestore();
+      db.collection('users')
+        .doc(id)
+        .update(newData)
+        const snapShot = newData
+        const updateBarance = snapShot.wallet;
+      this.showOwnPrice(name, updateBarance, id)
+      this.inputAmount = ''
     }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -182,6 +183,7 @@ li {
 #content {
   z-index: 2;
   width: 30%;
+  height: 30%;
   padding: 1em;
   background: #fff;
 }
