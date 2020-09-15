@@ -14,6 +14,9 @@ export default new Vuex.Store({
     loginUsers: [],
     isAuthenticated: false
   },
+  getters: {
+    loginUsers: state => state.loginUsers
+  },
   mutations: {
     setUser(state, currentUser) {
       state.user = currentUser;
@@ -68,27 +71,25 @@ export default new Vuex.Store({
           commit('setIsAuthenticated', false)
         })
     },
-    createdUser({commit}, payload) {
+    loggedInUser({commit}, payload) {
       commit('setCurrentUserName', payload)
       const db = firebase.firestore();
       db.collection('users')
         .where('displayName', '!=', payload.displayName)
-        .get()
-        .then((snapshot) => {
-          console.log(snapshot)
+        .onSnapshot((querySnapshot) => {
           const otherUsers = [];
-          snapshot.forEach(doc => {
+          querySnapshot.forEach((doc) => {
             otherUsers.push(doc.data().displayName)
-            console.log(doc.data().displayName)
-            this.commit('setLoginUsers', otherUsers)
-            this.commit('setBarance', doc.data().wallet);
+            commit('setLoginUsers', otherUsers)
+            commit('setBarance', doc.data().wallet);
+          })
         })
-      })
     },
     signOutAction({commit}) {
       firebase.auth().signOut()
         .then(() => {
           commit('setUser', null)
+          commit('setLoginUsers', null)
           commit('setIsAuthenticated', false)
           console.log('signout!!')
           router.push('/signin')

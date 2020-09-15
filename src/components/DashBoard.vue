@@ -13,7 +13,7 @@
     <div>
       <hr>
       <ul>ユーザー名
-        <li v-for="(user, index) in loginUsers" :key="index">
+        <li v-for="user in loginUsers" :key="user.id">
           {{ user }} <button>walletを見る</button><button>送る</button>
         </li>
       </ul>
@@ -28,11 +28,15 @@ export default {
       displayName: this.$store.state.displayName,
       barance: this.$store.state.barance,
       currentUser: this.$store.state.currentUser,
-      loginUsers: this.$store.state.loginUsers,
     };
   },
-  async created() {
-    await this.$store.dispatch('createdUser', {
+  computed: {
+    loginUsers() {
+      return this.$store.getters.loginUsers 
+    }
+  },
+  created() {
+    this.$store.dispatch('loggedInUser', {
       displayName: this.displayName,
     });
   },
