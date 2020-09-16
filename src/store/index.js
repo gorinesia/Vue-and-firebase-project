@@ -35,6 +35,7 @@ export default new Vuex.Store({
       state.displayName = firebase.auth().currentUser.displayName;
     },
     setCurrentUser(state, currentUser) {
+      console.log(currentUser)
       state.currentUser = currentUser;
     },
     setLoginUsers(state, otherLoginUsers) {

@@ -18,6 +18,7 @@
         <li v-for="loginUser in loginUsers" :key="loginUser.id">
           {{ loginUser.displayName }}
           <button
+            id="btn"
             @click="updateEachUsersWalletsBarance(loginUser.displayName, loginUser.barance, loginUser.id)"
           >walletを見る</button>
           <div
@@ -33,15 +34,9 @@
               <button @click="closeModalForCheckEachUsersWallets">close</button>
             </div>
           </div>
-          <button @click="openModalForSendMoney">送る</button>
-          <div
-            id="overlay"
-            v-show="modalForSendMoney"
-            v-for="currentUser in currentUser"
-            :key="currentUser.id"
-            @click="closeModalForSendMoney"
-          >
-            <div id="content" @click.stop>
+          <button id="btn" @click="openModalForSendMoney">送る</button>
+          <div id="overlay" v-show="modalForSendMoney" @click="closeModalForSendMoney">
+            <div id="content" v-for="currentUser in currentUser" :key="currentUser.id" @click.stop>
               <form>
                 <p>あなたの残高: {{ currentUser.barance }}</p>
                 <p>送る金額</p>
@@ -141,5 +136,9 @@ li {
   height: 30%;
   padding: 1em;
   background: #fff;
+}
+
+#btn {
+  margin: 5px;
 }
 </style>
