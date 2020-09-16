@@ -8,15 +8,24 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: null,
-    barance: '',
-    currentUser: {},
     displayName: '',
+    currentUser: [],
     loginUsers: [],
-    isAuthenticated: false
+    isAuthenticated: false,
+    modalForCheckWallets: false,
+    modalForSendMoney: false,
+    loginUserName: '',
+    loginUserBarance: '',
+    loginUserId: ''
   },
   getters: {
+    currentUser: state => state.currentUser,
     loginUsers: state => state.loginUsers,
-    barance: state => state.barance
+    modalForCheckWallets: state => state.modalForCheckWallets,
+    modalForSendMoney: state => state.modalForSendMoney,
+    loginUserName: state => state.loginUserName,
+    loginUserBarance: state => state.loginUserBarance,
+    loginUserId: state => state.loginUserId,
   },
   mutations: {
     setUser(state, currentUser) {
@@ -25,15 +34,36 @@ export default new Vuex.Store({
     setCurrentUserName(state) {
       state.displayName = firebase.auth().currentUser.displayName;
     },
-    setLoginUsers(state, otherUsers) {
-      state.loginUsers = otherUsers;
+    setCurrentUser(state, currentUser) {
+      state.currentUser = currentUser;
     },
-    setBarance(state, doc) {
-      state.barance = doc;
+    setLoginUsers(state, otherLoginUsers) {
+      state.loginUsers = otherLoginUsers;
     },
     setIsAuthenticated(state, payload) {
       state.isAuthenticated = payload;
-    }
+    },
+    openModalForCheckEachUsersWallets(state) {
+      state.modalForCheckWallets = true
+    },
+    closeModalForCheckEachUsersWallets(state) {
+      state.modalForCheckWallets = false
+    },
+    openModalForSendMoney(state) {
+      state.modalForSendMoney = true
+    },
+    closeModalForSendMoney(state) {
+      state.modalForSendMoney = false
+    },
+    setLoginUserName(state, loginUserName) {
+      state.loginUserName = loginUserName
+    },
+    setLoginUserBarance(state, loginUserBarance) {
+      state.loginUserBarance = loginUserBarance
+    },
+    setLoginUserId(state, loginUserId) {
+      state.loginUserId = loginUserId
+    },
   },
   actions: {
     signUpAction({commit}, payload) {
@@ -72,19 +102,43 @@ export default new Vuex.Store({
           commit('setIsAuthenticated', false)
         })
     },
-    loggedInUser({commit}, payload) {
+    loginUserDisplay({commit}, payload) {
       commit('setCurrentUserName', payload)
       const db = firebase.firestore();
       db.collection('users')
-        .where('displayName', '!=', payload.displayName)
         .onSnapshot((querySnapshot) => {
-          const otherUsers = [];
+          const allUsers = [];
           querySnapshot.forEach((doc) => {
-            otherUsers.push(doc.data().displayName)
-            commit('setLoginUsers', otherUsers)
-            commit('setBarance', doc.data().wallet);
+            allUsers.push({
+              displayName: doc.data().displayName,
+              barance: doc.data().wallet,
+              id: doc.id
+            })
+            const otherLoginUsers = allUsers.filter((otherUsers) => {
+              return otherUsers.displayName != payload.displayName
+            })
+            const currentLoginUser = allUsers.filter((currentUser) => {
+              return currentUser.displayName === payload.displayName
+            })
+            commit('setCurrentUser', currentLoginUser)
+            commit('setLoginUsers', otherLoginUsers)
           })
         })
+    },
+    updateEachUsersWalletsBarance({commit}, payload) {
+      commit('setLoginUserName', payload.loginUserName)
+      commit('setLoginUserBarance', payload.loginUserBarance)
+      commit('setLoginUserId', payload.loginUserId)
+      commit('openModalForCheckEachUsersWallets')
+    },
+    closeModalForCheckEachUsersWallets({commit}) {
+      commit('closeModalForCheckEachUsersWallets')
+    },
+    openModalForSendMoney({commit}) {
+      commit('openModalForSendMoney')
+    },
+    closeModalForSendMoney({commit}) {
+      commit('closeModalForSendMoney')
     },
     signOutAction({commit}) {
       firebase.auth().signOut()
