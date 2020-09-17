@@ -14,18 +14,18 @@ export default new Vuex.Store({
     isAuthenticated: false,
     modalForCheckWallets: false,
     modalForSendMoney: false,
-    loginUserName: '',
-    loginUserBarance: '',
-    loginUserId: ''
+    loginUser: {
+      name: '',
+      wallet: '',
+      id: ''
+    }
   },
   getters: {
     currentUser: state => state.currentUser,
     loginUsers: state => state.loginUsers,
     modalForCheckWallets: state => state.modalForCheckWallets,
     modalForSendMoney: state => state.modalForSendMoney,
-    loginUserName: state => state.loginUserName,
-    loginUserBarance: state => state.loginUserBarance,
-    loginUserId: state => state.loginUserId,
+    loginUser: state => state.loginUser
   },
   mutations: {
     setUser(state, currentUser) {
@@ -39,6 +39,7 @@ export default new Vuex.Store({
       state.currentUser = currentUser;
     },
     setLoginUsers(state, otherLoginUsers) {
+      console.log(otherLoginUsers)
       state.loginUsers = otherLoginUsers;
     },
     setIsAuthenticated(state, payload) {
@@ -56,15 +57,10 @@ export default new Vuex.Store({
     closeModalForSendMoney(state) {
       state.modalForSendMoney = false
     },
-    setLoginUserName(state, loginUserName) {
-      state.loginUserName = loginUserName
-    },
-    setLoginUserBarance(state, loginUserBarance) {
-      state.loginUserBarance = loginUserBarance
-    },
-    setLoginUserId(state, loginUserId) {
-      state.loginUserId = loginUserId
-    },
+    setLoginUser(state, loginUser) {
+      state.loginUser = loginUser
+      console.log(state.loginUser)
+    }
   },
   actions: {
     signUpAction({commit}, payload) {
@@ -126,10 +122,9 @@ export default new Vuex.Store({
           })
         })
     },
-    updateEachUsersWalletsBarance({commit}, payload) {
-      commit('setLoginUserName', payload.loginUserName)
-      commit('setLoginUserBarance', payload.loginUserBarance)
-      commit('setLoginUserId', payload.loginUserId)
+    setLoginUser({commit}, payload) {
+      console.log(payload)
+      commit('setLoginUser', payload)
       commit('openModalForCheckEachUsersWallets')
     },
     closeModalForCheckEachUsersWallets({commit}) {

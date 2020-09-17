@@ -15,11 +15,11 @@
       <h2>ユーザー一覧</h2>
       <h3>ユーザー名</h3>
       <ul>
-        <li v-for="loginUser in loginUsers" :key="loginUser.id">
-          {{ loginUser.displayName }}
+        <li v-for="user in loginUsers" :key="user.id">
+          {{ user.displayName }}
           <button
             id="btn"
-            @click="updateEachUsersWalletsBarance(loginUser.displayName, loginUser.barance, loginUser.id)"
+            @click="setLoginUser(user.displayName, user.barance, user.id)"
           >walletを見る</button>
           <div
             id="overlay"
@@ -28,8 +28,8 @@
           >
             <div id="content">
               <form>
-                <p>{{ loginUserName }}さんの残高</p>
-                <p>{{ loginUserBarance }}円</p>
+                <p>{{ loginUser.name }}さんの残高</p>
+                <p>{{ loginUser.wallet }}円</p>
               </form>
               <button @click="closeModalForCheckEachUsersWallets">close</button>
             </div>
@@ -71,14 +71,8 @@ export default {
     modalForSendMoney() {
       return this.$store.getters.modalForSendMoney;
     },
-    loginUserName() {
-      return this.$store.getters.loginUserName;
-    },
-    loginUserBarance() {
-      return this.$store.getters.loginUserBarance;
-    },
-    loginUserId() {
-      return this.$store.getters.loginUserId;
+    loginUser() {
+      return this.$store.getters.loginUser;
     },
   },
   created() {
@@ -90,11 +84,11 @@ export default {
     signOut() {
       this.$store.dispatch("signOutAction");
     },
-    updateEachUsersWalletsBarance(name, barance, id) {
-      this.$store.dispatch("updateEachUsersWalletsBarance", {
-        loginUserName: name,
-        loginUserBarance: barance,
-        loginUserId: id,
+    setLoginUser(name, barance, id) {
+      this.$store.dispatch("setLoginUser", {
+        name: name,
+        wallet: barance,
+        id: id,
       });
     },
     closeModalForCheckEachUsersWallets() {
