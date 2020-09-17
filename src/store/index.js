@@ -35,11 +35,9 @@ export default new Vuex.Store({
       state.displayName = firebase.auth().currentUser.displayName;
     },
     setCurrentUser(state, currentUser) {
-      console.log(currentUser)
       state.currentUser = currentUser;
     },
     setLoginUsers(state, otherLoginUsers) {
-      console.log(otherLoginUsers)
       state.loginUsers = otherLoginUsers;
     },
     setIsAuthenticated(state, payload) {
@@ -59,7 +57,6 @@ export default new Vuex.Store({
     },
     setLoginUser(state, loginUser) {
       state.loginUser = loginUser
-      console.log(state.loginUser)
     }
   },
   actions: {
@@ -123,7 +120,6 @@ export default new Vuex.Store({
         })
     },
     setLoginUser({commit}, payload) {
-      console.log(payload)
       commit('setLoginUser', payload)
       commit('openModalForCheckEachUsersWallets')
     },
