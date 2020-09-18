@@ -19,7 +19,7 @@
           {{ user.displayName }}
           <button
             id="btn"
-            @click="getWalletAmount(user.displayName, user.barance, user.id)"
+            @click="getLoginUserWalletAmount(user.displayName, user.barance, user.id)"
           >walletを見る</button>
           <div
             id="overlay"
@@ -40,8 +40,10 @@
               <form>
                 <p>あなたの残高: {{ currentUser.barance }}</p>
                 <p>送る金額</p>
-                <input type="number" label="金額" v-model.number="inputAmount"/>
-                <button @click.prevent="updateWalletAmount(currentUser.id, currentUser.barance, inputAmount)">送信</button>
+                <input type="number" label="金額" v-model.number="sendMoneyAmount" />
+                <button
+                  @click.prevent="sendMoneyForOtherUsers(currentUser.id, currentUser.barance, sendMoneyAmount)"
+                >送信</button>
               </form>
             </div>
           </div>
@@ -55,7 +57,7 @@
 export default {
   data() {
     return {
-      inputAmount: this.$store.state.inputAmount
+      sendMoneyAmount: this.$store.state.sendMoneyAmount,
     };
   },
   computed: {
@@ -76,46 +78,46 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('loginUserDisplay');
+    this.$store.dispatch("loginUserDisplay");
   },
   methods: {
     signOut() {
-      this.$store.dispatch('signOutAction');
+      this.$store.dispatch("signOutAction");
     },
     setLoginUser(name, barance, id) {
-      this.$store.dispatch('setLoginUser', {
+      this.$store.dispatch("setLoginUser", {
         name: name,
         wallet: barance,
         id: id,
       });
     },
     closeModalForCheckEachUsersWallets() {
-      this.$store.dispatch('closeModalForCheckEachUsersWallets');
-      this.inputAmount = 0;
+      this.$store.dispatch("closeModalForCheckEachUsersWallets");
+      this.sendMoneyAmount = 0;
     },
     openModalForSendMoney() {
-      this.$store.dispatch('openModalForSendMoney');
+      this.$store.dispatch("openModalForSendMoney");
     },
     closeModalForSendMoney() {
-      this.$store.dispatch('closeModalForSendMoney');
-      this.inputAmount = 0;
+      this.$store.dispatch("closeModalForSendMoney");
+      this.sendMoneyAmount = 0;
     },
-    updateWalletAmount(id, number) {
-      this.$store.dispatch('updateWalletAmount', {
+    sendMoneyForOtherUsers(id, barance) {
+      this.$store.dispatch("sendMoneyForOtherUsers", {
         id: id,
-        number: number,
-        inputAmount: this.inputAmount
-      })
+        barance: barance,
+        sendMoneyAmount: this.sendMoneyAmount,
+      });
     },
-    getWalletAmount(name, barance, id) {
-      console.log(barance)
-      this.$store.dispatch('getWalletAmount', {
+    getLoginUserWalletAmount(name, barance, id) {
+      console.log(barance);
+      this.$store.dispatch("getLoginUserWalletAmount", {
         name: name,
         barance: barance,
         id: id,
-        inputAmount: this.inputAmount
-      })
-    }
+        receivedMoneyAmount: this.sendMoneyAmount,
+      });
+    },
   },
 };
 </script>

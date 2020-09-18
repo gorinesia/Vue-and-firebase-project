@@ -18,7 +18,7 @@ export default new Vuex.Store({
       wallet: '',
       id: ''
     },
-    inputAmount: 0
+    sendMoneyAmount: 0
   },
   getters: {
     currentUser: state => state.currentUser,
@@ -58,8 +58,8 @@ export default new Vuex.Store({
     setLoginUser(state, loginUser) {
       state.loginUser = loginUser
     },
-    setInputAmount(state, inputAmount) {
-      state.inputAmount = inputAmount
+    setSendMoneyAmount(state, sendMoneyAmount) {
+      state.sendMoneyAmount = sendMoneyAmount
     }
   },
   actions: {
@@ -126,7 +126,6 @@ export default new Vuex.Store({
     },
     closeModalForCheckEachUsersWallets({commit}) {
       commit('closeModalForCheckEachUsersWallets')
-      commit('setInputAmount', null)
     },
     openModalForSendMoney({commit}) {
       commit('openModalForSendMoney')
@@ -134,36 +133,31 @@ export default new Vuex.Store({
     closeModalForSendMoney({commit}) {
       commit('closeModalForSendMoney')
     },
-    updateWalletAmount({commit}, payload) {
-      console.log(payload);
-      commit('setInputAmount', payload.inputAmount)
+    sendMoneyForOtherUsers({commit}, payload) {
+      commit('setSendMoneyAmount', payload.sendMoneyAmount)
       const db = firebase.firestore();
       db.collection("users")
         .doc(payload.id)
         .update({
-          wallet: payload.number - payload.inputAmount,
+          wallet: payload.barance - payload.sendMoneyAmount,
         });
       commit('closeModalForSendMoney')
     },
-    getWalletAmount({commit}, payload) {
-      console.log(payload)
-      const str = parseInt(payload.barance, 10)
-      console.log(str)
-      const newData = {};
-      newData['wallet'] = (str + payload.inputAmount)
+    getLoginUserWalletAmount({commit}, payload) {
+      const currentWalletAmount = parseInt(payload.barance, 10)
+      const newWalletAmount = {};
+      newWalletAmount['wallet'] = (currentWalletAmount + payload.receivedMoneyAmount)
       const db = firebase.firestore();
       db.collection('users')
         .doc(payload.id)
-        .update(newData)
-        const snapShot = newData
-        console.log(snapShot)
-        const updateBarance = snapShot.wallet;
-        console.log(updateBarance)
+        .update(newWalletAmount)
+        const snapShot = newWalletAmount
+        const updateWalletBarance = snapShot.wallet;
       commit('setLoginUser', {
         name: payload.name,
-        wallet: updateBarance,
+        wallet: updateWalletBarance,
         id: payload.id,
-        inputAmount: payload.inputAmount
+        sendMoneyAmount: payload.sendMoneyAmount
       })
       commit('openModalForCheckEachUsersWallets')
     },
