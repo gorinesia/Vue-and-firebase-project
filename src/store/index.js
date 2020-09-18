@@ -8,15 +8,24 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: null,
-    barance: '',
-    currentUser: {},
     displayName: '',
+    currentUser: [],
     loginUsers: [],
-    isAuthenticated: false
+    isAuthenticated: false,
+    modalForCheckWallets: false,
+    modalForSendMoney: false,
+    loginUser: {
+      name: '',
+      wallet: '',
+      id: ''
+    }
   },
   getters: {
+    currentUser: state => state.currentUser,
     loginUsers: state => state.loginUsers,
-    barance: state => state.barance
+    modalForCheckWallets: state => state.modalForCheckWallets,
+    modalForSendMoney: state => state.modalForSendMoney,
+    loginUser: state => state.loginUser
   },
   mutations: {
     setUser(state, currentUser) {
@@ -25,14 +34,29 @@ export default new Vuex.Store({
     setCurrentUserName(state) {
       state.displayName = firebase.auth().currentUser.displayName;
     },
-    setLoginUsers(state, otherUsers) {
-      state.loginUsers = otherUsers;
+    setCurrentUser(state, currentUser) {
+      state.currentUser = currentUser;
     },
-    setBarance(state, doc) {
-      state.barance = doc;
+    setLoginUsers(state, otherLoginUsers) {
+      state.loginUsers = otherLoginUsers;
     },
     setIsAuthenticated(state, payload) {
       state.isAuthenticated = payload;
+    },
+    openModalForCheckEachUsersWallets(state) {
+      state.modalForCheckWallets = true
+    },
+    closeModalForCheckEachUsersWallets(state) {
+      state.modalForCheckWallets = false
+    },
+    openModalForSendMoney(state) {
+      state.modalForSendMoney = true
+    },
+    closeModalForSendMoney(state) {
+      state.modalForSendMoney = false
+    },
+    setLoginUser(state, loginUser) {
+      state.loginUser = loginUser
     }
   },
   actions: {
@@ -72,19 +96,41 @@ export default new Vuex.Store({
           commit('setIsAuthenticated', false)
         })
     },
-    loggedInUser({commit}, payload) {
+    loginUserDisplay({commit}, payload) {
       commit('setCurrentUserName', payload)
       const db = firebase.firestore();
       db.collection('users')
-        .where('displayName', '!=', payload.displayName)
         .onSnapshot((querySnapshot) => {
-          const otherUsers = [];
+          const allUsers = [];
           querySnapshot.forEach((doc) => {
-            otherUsers.push(doc.data().displayName)
-            commit('setLoginUsers', otherUsers)
-            commit('setBarance', doc.data().wallet);
+            allUsers.push({
+              displayName: doc.data().displayName,
+              barance: doc.data().wallet,
+              id: doc.id
+            })
+            const otherLoginUsers = allUsers.filter((otherUsers) => {
+              return otherUsers.displayName != payload.displayName
+            })
+            const currentLoginUser = allUsers.filter((currentUser) => {
+              return currentUser.displayName === payload.displayName
+            })
+            commit('setCurrentUser', currentLoginUser)
+            commit('setLoginUsers', otherLoginUsers)
           })
         })
+    },
+    setLoginUser({commit}, payload) {
+      commit('setLoginUser', payload)
+      commit('openModalForCheckEachUsersWallets')
+    },
+    closeModalForCheckEachUsersWallets({commit}) {
+      commit('closeModalForCheckEachUsersWallets')
+    },
+    openModalForSendMoney({commit}) {
+      commit('openModalForSendMoney')
+    },
+    closeModalForSendMoney({commit}) {
+      commit('closeModalForSendMoney')
     },
     signOutAction({commit}) {
       firebase.auth().signOut()
