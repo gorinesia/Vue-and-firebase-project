@@ -76,29 +76,29 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch("loginUserDisplay", {
+    this.$store.dispatch('loginUserDisplay', {
       displayName: this.displayName,
     });
   },
   methods: {
     signOut() {
-      this.$store.dispatch("signOutAction");
+      this.$store.dispatch('signOutAction');
     },
     setLoginUser(name, barance, id) {
-      this.$store.dispatch("setLoginUser", {
+      this.$store.dispatch('setLoginUser', {
         name: name,
         wallet: barance,
         id: id,
       });
     },
     closeModalForCheckEachUsersWallets() {
-      this.$store.dispatch("closeModalForCheckEachUsersWallets");
+      this.$store.dispatch('closeModalForCheckEachUsersWallets');
     },
     openModalForSendMoney() {
-      this.$store.dispatch("openModalForSendMoney");
+      this.$store.dispatch('openModalForSendMoney');
     },
     closeModalForSendMoney() {
-      this.$store.dispatch("closeModalForSendMoney");
+      this.$store.dispatch('closeModalForSendMoney');
     },
   },
 };
