@@ -19,7 +19,7 @@
           {{ user.displayName }}
           <button
             id="btn"
-            @click="setLoginUser(user.displayName, user.barance, user.id)"
+            @click="getWalletAmount(user.displayName, user.barance, user.id)"
           >walletを見る</button>
           <div
             id="overlay"
@@ -40,8 +40,8 @@
               <form>
                 <p>あなたの残高: {{ currentUser.barance }}</p>
                 <p>送る金額</p>
-                <input type="number" label="金額" />
-                <button>送信</button>
+                <input type="number" label="金額" v-model.number="inputAmount"/>
+                <button @click.prevent="updateWalletAmount(currentUser.id, currentUser.barance, inputAmount)">送信</button>
               </form>
             </div>
           </div>
@@ -55,7 +55,7 @@
 export default {
   data() {
     return {
-      displayName: this.$store.state.displayName,
+      inputAmount: this.$store.state.inputAmount
     };
   },
   computed: {
@@ -75,10 +75,8 @@ export default {
       return this.$store.getters.loginUser;
     },
   },
-  created() {
-    this.$store.dispatch('loginUserDisplay', {
-      displayName: this.displayName,
-    });
+  mounted() {
+    this.$store.dispatch('loginUserDisplay');
   },
   methods: {
     signOut() {
@@ -93,13 +91,31 @@ export default {
     },
     closeModalForCheckEachUsersWallets() {
       this.$store.dispatch('closeModalForCheckEachUsersWallets');
+      this.inputAmount = 0;
     },
     openModalForSendMoney() {
       this.$store.dispatch('openModalForSendMoney');
     },
     closeModalForSendMoney() {
       this.$store.dispatch('closeModalForSendMoney');
+      this.inputAmount = 0;
     },
+    updateWalletAmount(id, number) {
+      this.$store.dispatch('updateWalletAmount', {
+        id: id,
+        number: number,
+        inputAmount: this.inputAmount
+      })
+    },
+    getWalletAmount(name, barance, id) {
+      console.log(barance)
+      this.$store.dispatch('getWalletAmount', {
+        name: name,
+        barance: barance,
+        id: id,
+        inputAmount: this.inputAmount
+      })
+    }
   },
 };
 </script>

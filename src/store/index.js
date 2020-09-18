@@ -8,7 +8,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: null,
-    displayName: '',
     currentUser: [],
     loginUsers: [],
     isAuthenticated: false,
@@ -18,24 +17,25 @@ export default new Vuex.Store({
       name: '',
       wallet: '',
       id: ''
-    }
+    },
+    inputAmount: 0
   },
   getters: {
     currentUser: state => state.currentUser,
     loginUsers: state => state.loginUsers,
     modalForCheckWallets: state => state.modalForCheckWallets,
     modalForSendMoney: state => state.modalForSendMoney,
-    loginUser: state => state.loginUser
+    loginUser: state => state.loginUser,
   },
   mutations: {
     setUser(state, currentUser) {
       state.user = currentUser;
     },
-    setCurrentUserName(state) {
-      state.displayName = firebase.auth().currentUser.displayName;
-    },
     setCurrentUser(state, currentUser) {
       state.currentUser = currentUser;
+    },
+    setCurrentLoginUser(state, currentLoginUser) {
+      state.currentLoginUser = currentLoginUser;
     },
     setLoginUsers(state, otherLoginUsers) {
       state.loginUsers = otherLoginUsers;
@@ -57,6 +57,9 @@ export default new Vuex.Store({
     },
     setLoginUser(state, loginUser) {
       state.loginUser = loginUser
+    },
+    setInputAmount(state, inputAmount) {
+      state.inputAmount = inputAmount
     }
   },
   actions: {
@@ -74,7 +77,6 @@ export default new Vuex.Store({
           result.user.updateProfile({
             displayName: payload.displayName
           })
-          commit('setCurrentUserName', payload.displayName)
           commit('setUser', result.user.uid)
           router.push('/signin')
         })
@@ -85,7 +87,6 @@ export default new Vuex.Store({
     signInAction({commit}, payload) {
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
         .then((result) => {
-          commit('setCurrentUserName', result.user.displayName)
           commit('setUser', result.user.uid)
           commit('setIsAuthenticated', true)
           console.log('signin!!')
@@ -96,8 +97,8 @@ export default new Vuex.Store({
           commit('setIsAuthenticated', false)
         })
     },
-    loginUserDisplay({commit}, payload) {
-      commit('setCurrentUserName', payload)
+    loginUserDisplay({commit}) {
+      const getUser = firebase.auth().currentUser;
       const db = firebase.firestore();
       db.collection('users')
         .onSnapshot((querySnapshot) => {
@@ -109,10 +110,10 @@ export default new Vuex.Store({
               id: doc.id
             })
             const otherLoginUsers = allUsers.filter((otherUsers) => {
-              return otherUsers.displayName != payload.displayName
+              return otherUsers.displayName != getUser.displayName
             })
             const currentLoginUser = allUsers.filter((currentUser) => {
-              return currentUser.displayName === payload.displayName
+              return currentUser.displayName === getUser.displayName
             })
             commit('setCurrentUser', currentLoginUser)
             commit('setLoginUsers', otherLoginUsers)
@@ -125,12 +126,46 @@ export default new Vuex.Store({
     },
     closeModalForCheckEachUsersWallets({commit}) {
       commit('closeModalForCheckEachUsersWallets')
+      commit('setInputAmount', null)
     },
     openModalForSendMoney({commit}) {
       commit('openModalForSendMoney')
     },
     closeModalForSendMoney({commit}) {
       commit('closeModalForSendMoney')
+    },
+    updateWalletAmount({commit}, payload) {
+      console.log(payload);
+      commit('setInputAmount', payload.inputAmount)
+      const db = firebase.firestore();
+      db.collection("users")
+        .doc(payload.id)
+        .update({
+          wallet: payload.number - payload.inputAmount,
+        });
+      commit('closeModalForSendMoney')
+    },
+    getWalletAmount({commit}, payload) {
+      console.log(payload)
+      const str = parseInt(payload.barance, 10)
+      console.log(str)
+      const newData = {};
+      newData['wallet'] = (str + payload.inputAmount)
+      const db = firebase.firestore();
+      db.collection('users')
+        .doc(payload.id)
+        .update(newData)
+        const snapShot = newData
+        console.log(snapShot)
+        const updateBarance = snapShot.wallet;
+        console.log(updateBarance)
+      commit('setLoginUser', {
+        name: payload.name,
+        wallet: updateBarance,
+        id: payload.id,
+        inputAmount: payload.inputAmount
+      })
+      commit('openModalForCheckEachUsersWallets')
     },
     signOutAction({commit}) {
       firebase.auth().signOut()
