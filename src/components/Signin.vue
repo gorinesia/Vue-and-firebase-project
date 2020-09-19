@@ -1,44 +1,48 @@
 <template>
-  <div class="signin">
-    <div>
-      <img alt="Vue logo" src="../assets/logo.png" />
-    </div>
-    <div>
-      <h2>ログイン画面</h2>
-    </div>
-    <div>
-      <form>
-        <div>
-          <label for="email">メールアドレス</label>
-          <input type="email" id="email" placeholder="Email" v-model="email" />
-        </div>
-        <div>
-          <label for="password">パスワード</label>
-          <input type="password" id="password" placeholder="Password" v-model="password" />
-        </div>
-      </form>
-    </div>
-    <div>
-      <button @click="signIn">ログイン</button>
-    </div>
-    <div>
-      <router-link to="/signup">新規登録はこちらから</router-link>
-    </div>
-  </div>
+  <v-app>
+    <v-card width="400px" class="mx-auto mt-5">
+      <v-card-title>
+        <h1 class="display-1">ログイン</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-form>
+          <v-text-field
+            type="email"
+            prepend-icon="mdi-account-circle"
+            label="メールアドレス"
+            v-model="email"
+          />
+          <v-text-field
+            :type="showPassword ? 'text' : 'password'"
+            prepend-icon="mdi-lock"
+            label="パスワード"
+            @click:append="showPassword = !showPassword"
+            v-model="password"
+          />
+          <v-card-actions>
+            <v-btn class="info" @click="signIn">ログイン</v-btn>
+          </v-card-actions>
+          <v-card-actions>
+            <v-btn to="/signup">新規登録はこちら</v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </v-app>
 </template>
 
 <script>
 export default {
-  name: 'Signin',
+  name: "Signin",
   data() {
     return {
-      email: '',
-      password: ''
+      email: "",
+      password: "",
     };
   },
   methods: {
     signIn() {
-      this.$store.dispatch('signInAction', {
+      this.$store.dispatch("signInAction", {
         email: this.email,
         password: this.password,
       });
