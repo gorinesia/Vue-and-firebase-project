@@ -12,15 +12,11 @@
             label="ユーザー名"
             v-model="displayName"
           />
-          <v-text-field
-            type="email"
-            prepend-icon="mdi-account-circle"
-            label="メールアドレス"
-            v-model="email"
-          />
+          <v-text-field type="email" prepend-icon="mdi-email" label="メールアドレス" v-model="email" />
           <v-text-field
             :type="showPassword ? 'text' : 'password'"
             prepend-icon="mdi-lock"
+            append-icon="mdi-eye-off"
             label="パスワード"
             @click:append="showPassword = !showPassword"
             v-model="password"
@@ -39,21 +35,22 @@
 
 <script>
 export default {
-  name: 'Signup',
+  name: "Signup",
   data() {
     return {
-      displayName: '',
-      email: '',
-      password: '',
+      displayName: "",
+      email: "",
+      password: "",
+      showPassword: false,
     };
   },
   methods: {
     signUp() {
-      this.$store.dispatch('signUpAction', {
+      this.$store.dispatch("signUpAction", {
         displayName: this.displayName,
         email: this.email,
         password: this.password,
-        wallet: 500
+        wallet: 500,
       });
     },
   },

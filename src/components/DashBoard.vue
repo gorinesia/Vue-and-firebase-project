@@ -2,24 +2,18 @@
   <v-app>
     <v-container>
       <v-row v-for="currentUser in currentUser" :key="currentUser.id">
-        <v-col cols="4">
+        <v-col cols="8">
           <h2>{{ currentUser.displayName }} さんようこそ！</h2>
-        </v-col>
-        <v-col cols="2">
-        </v-col>
-        <v-col cols="2">
         </v-col>
         <v-col cols="2">
           <p>残高: {{ currentUser.barance }} 円</p>
         </v-col>
         <v-col cols="2">
-          <v-card-action>
-            <v-btn class="info" @click="signOut">ログアウト</v-btn>
-          </v-card-action>
+          <v-btn class="info" @click="signOut">ログアウト</v-btn>
         </v-col>
       </v-row>
-      <h2 style="text-align: center">ユーザー一覧</h2>
-      <h3 style="margin-left: 20px">ユーザー名</h3>
+      <h2 class="h2">ユーザー一覧</h2>
+      <h3>ユーザー名</h3>
       <ul>
         <li v-for="user in loginUsers" :key="user.id">
           <v-row>
@@ -33,14 +27,14 @@
               <v-btn
                 class="primary mr-2"
                 id="btn"
-                @click="getLoginUserWalletAmount(user.displayName, user.barance, user.id)"
+                @click="getLoginUserWalletAmount(user)"
               >walletを見る</v-btn>
               <div
                 id="overlay"
                 v-show="modalForCheckWallets"
                 @click="closeModalForCheckEachUsersWallets"
               >
-                <div id="content" >
+                <div id="content">
                   <v-form>
                     <p>{{ loginUser.name }}さんの残高</p>
                     <p>{{ loginUser.wallet }}円</p>
@@ -50,7 +44,12 @@
               </div>
               <v-btn class="accent" @click="openModalForSendMoney">送る</v-btn>
               <div id="overlay" v-show="modalForSendMoney" @click="closeModalForSendMoney">
-                <div id="content" v-for="currentUser in currentUser" :key="currentUser.id" @click.stop>
+                <div
+                  id="content"
+                  v-for="currentUser in currentUser"
+                  :key="currentUser.id"
+                  @click.stop
+                >
                   <v-form>
                     <p>あなたの残高: {{ currentUser.barance }}</p>
                     <p>送る金額</p>
@@ -96,43 +95,42 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('loginUserDisplay');
+    this.$store.dispatch("loginUserDisplay");
   },
   methods: {
     signOut() {
-      this.$store.dispatch('signOutAction');
+      this.$store.dispatch("signOutAction");
     },
     setLoginUser(name, barance, id) {
-      this.$store.dispatch('setLoginUser', {
+      this.$store.dispatch("setLoginUser", {
         name: name,
         wallet: barance,
         id: id,
       });
     },
     closeModalForCheckEachUsersWallets() {
-      this.$store.dispatch('closeModalForCheckEachUsersWallets');
+      this.$store.dispatch("closeModalForCheckEachUsersWallets");
       this.sendMoneyAmount = 0;
     },
     openModalForSendMoney() {
-      this.$store.dispatch('openModalForSendMoney');
+      this.$store.dispatch("openModalForSendMoney");
     },
     closeModalForSendMoney() {
-      this.$store.dispatch('closeModalForSendMoney');
+      this.$store.dispatch("closeModalForSendMoney");
       this.sendMoneyAmount = 0;
     },
     sendMoneyForOtherUsers(id, barance) {
-      this.$store.dispatch('sendMoneyForOtherUsers', {
-        id: id,
-        barance: barance,
+      this.$store.dispatch("sendMoneyForOtherUsers", {
+        id,
+        barance,
         sendMoneyAmount: this.sendMoneyAmount,
       });
     },
-    getLoginUserWalletAmount(name, barance, id) {
-      console.log(barance);
-      this.$store.dispatch('getLoginUserWalletAmount', {
-        name: name,
-        barance: barance,
-        id: id,
+    getLoginUserWalletAmount(user) {
+      this.$store.dispatch("getLoginUserWalletAmount", {
+        name: user.displayName,
+        barance: user.barance,
+        id: user.id,
         receivedMoneyAmount: this.sendMoneyAmount,
       });
     },
@@ -170,5 +168,13 @@ li {
 
 #btn {
   margin: 5px;
+}
+
+.h2 {
+  text-align: center;
+}
+
+h3 {
+  margin-left: 50px;
 }
 </style>

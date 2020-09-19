@@ -6,15 +6,11 @@
       </v-card-title>
       <v-card-text>
         <v-form>
-          <v-text-field
-            type="email"
-            prepend-icon="mdi-account-circle"
-            label="メールアドレス"
-            v-model="email"
-          />
+          <v-text-field type="email" prepend-icon="mdi-email" label="メールアドレス" v-model="email" />
           <v-text-field
             :type="showPassword ? 'text' : 'password'"
             prepend-icon="mdi-lock"
+            append-icon="mdi-eye-off"
             label="パスワード"
             @click:append="showPassword = !showPassword"
             v-model="password"
@@ -38,6 +34,7 @@ export default {
     return {
       email: "",
       password: "",
+      showPassword: false,
     };
   },
   methods: {
