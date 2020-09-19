@@ -19,7 +19,7 @@
           {{ user.displayName }}
           <button
             id="btn"
-            @click="getLoginUserWalletAmount(user.displayName, user.barance, user.id)"
+            @click="getLoginUserWalletAmount(user)"
           >walletを見る</button>
           <div
             id="overlay"
@@ -104,17 +104,16 @@ export default {
     },
     sendMoneyForOtherUsers(id, barance) {
       this.$store.dispatch('sendMoneyForOtherUsers', {
-        id: id,
-        barance: barance,
+        id,
+        barance,
         sendMoneyAmount: this.sendMoneyAmount,
       });
     },
-    getLoginUserWalletAmount(name, barance, id) {
-      console.log(barance);
+    getLoginUserWalletAmount(user) {
       this.$store.dispatch('getLoginUserWalletAmount', {
-        name: name,
-        barance: barance,
-        id: id,
+        name: user.displayName,
+        barance: user.barance,
+        id: user.id,
         receivedMoneyAmount: this.sendMoneyAmount,
       });
     },
