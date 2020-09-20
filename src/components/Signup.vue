@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  name: "Signup",
+  name: 'Signup',
   data() {
     return {
       displayName: '',

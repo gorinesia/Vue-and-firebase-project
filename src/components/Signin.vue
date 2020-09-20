@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  name: "Signin",
+  name: 'Signin',
   data() {
     return {
       email: '',
