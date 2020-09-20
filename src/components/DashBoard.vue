@@ -91,39 +91,39 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch("loginUserDisplay");
+    this.$store.dispatch('loginUserDisplay');
   },
   methods: {
     signOut() {
-      this.$store.dispatch("signOutAction");
+      this.$store.dispatch('signOutAction');
     },
     setLoginUser(name, barance, id) {
-      this.$store.dispatch("setLoginUser", {
+      this.$store.dispatch('setLoginUser', {
         name: name,
         wallet: barance,
         id: id,
       });
     },
     closeModalForCheckEachUsersWallets() {
-      this.$store.dispatch("closeModalForCheckEachUsersWallets");
+      this.$store.dispatch('closeModalForCheckEachUsersWallets');
       this.sendMoneyAmount = 0;
     },
     openModalForSendMoney() {
-      this.$store.dispatch("openModalForSendMoney");
+      this.$store.dispatch('openModalForSendMoney');
     },
     closeModalForSendMoney() {
-      this.$store.dispatch("closeModalForSendMoney");
+      this.$store.dispatch('closeModalForSendMoney');
       this.sendMoneyAmount = 0;
     },
     sendMoneyForOtherUsers(id, barance) {
-      this.$store.dispatch("sendMoneyForOtherUsers", {
+      this.$store.dispatch('sendMoneyForOtherUsers', {
         id,
         barance,
         sendMoneyAmount: this.sendMoneyAmount,
       });
     },
     getLoginUserWalletAmount(user) {
-      this.$store.dispatch("getLoginUserWalletAmount", {
+      this.$store.dispatch('getLoginUserWalletAmount', {
         name: user.displayName,
         barance: user.barance,
         id: user.id,

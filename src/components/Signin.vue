@@ -32,14 +32,14 @@ export default {
   name: "Signin",
   data() {
     return {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       showPassword: false,
     };
   },
   methods: {
     signIn() {
-      this.$store.dispatch("signInAction", {
+      this.$store.dispatch('signInAction', {
         email: this.email,
         password: this.password,
       });

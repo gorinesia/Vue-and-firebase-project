@@ -38,15 +38,15 @@ export default {
   name: "Signup",
   data() {
     return {
-      displayName: "",
-      email: "",
-      password: "",
+      displayName: '',
+      email: '',
+      password: '',
       showPassword: false,
     };
   },
   methods: {
     signUp() {
-      this.$store.dispatch("signUpAction", {
+      this.$store.dispatch('signUpAction', {
         displayName: this.displayName,
         email: this.email,
         password: this.password,
