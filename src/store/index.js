@@ -66,12 +66,12 @@ export default new Vuex.Store({
     signUpAction({ commit }, payload) {
       const db = firebase.firestore().collection('users');
       db.add(payload)
-        .then((docRef) => {
-          console.log(docRef.id);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+      .then((docRef) => {
+        console.log(docRef.id);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
         .then((result) => {
           result.user.updateProfile({
@@ -120,20 +120,20 @@ export default new Vuex.Store({
           })
         })
     },
-    setLoginUser({ commit }, payload) {
+    setLoginUser({commit}, payload) {
       commit('setLoginUser', payload);
       commit('openModalForCheckEachUsersWallets');
     },
-    closeModalForCheckEachUsersWallets({ commit }) {
+    closeModalForCheckEachUsersWallets({commit}) {
       commit('closeModalForCheckEachUsersWallets');
     },
-    openModalForSendMoney({ commit }) {
+    openModalForSendMoney({commit}) {
       commit('openModalForSendMoney');
     },
-    closeModalForSendMoney({ commit }) {
+    closeModalForSendMoney({commit}) {
       commit('closeModalForSendMoney');
     },
-    sendMoneyForOtherUsers({ commit }, payload) {
+    sendMoneyForOtherUsers({commit}, payload) {
       commit('setSendMoneyAmount', payload.sendMoneyAmount);
       const db = firebase.firestore();
       db.collection("users")
@@ -143,7 +143,7 @@ export default new Vuex.Store({
         });
       commit('closeModalForSendMoney');
     },
-    getLoginUserWalletAmount({ commit }, payload) {
+    getLoginUserWalletAmount({commit}, payload) {
       const currentWalletAmount = parseInt(payload.barance, 10);
       const newWalletAmount = {};
       newWalletAmount['wallet'] = (currentWalletAmount + payload.receivedMoneyAmount);
