@@ -1,61 +1,76 @@
 <template>
-  <div>
-    <div>
-      <img alt="Vue logo" src="../assets/logo.png" />
-    </div>
-    <div v-for="currentUser in currentUser" :key="currentUser.id">
-      <h2>こんにちは {{ currentUser.displayName }} さん</h2>
-      <p>残高: {{ currentUser.barance }} 円</p>
-    </div>
-    <div>
-      <button @click="signOut">ログアウト</button>
-    </div>
-    <div>
-      <hr />
-      <h2>ユーザー一覧</h2>
+  <v-app>
+    <v-container>
+      <v-row v-for="currentUser in currentUser" :key="currentUser.id">
+        <v-col cols="8">
+          <h2>{{ currentUser.displayName }} さんようこそ！</h2>
+        </v-col>
+        <v-col cols="2">
+          <p>残高: {{ currentUser.barance }} 円</p>
+        </v-col>
+        <v-col cols="2">
+          <v-btn class="info" @click="signOut">ログアウト</v-btn>
+        </v-col>
+      </v-row>
+      <h2 class="h2">ユーザー一覧</h2>
       <h3>ユーザー名</h3>
       <ul>
         <li v-for="user in loginUsers" :key="user.id">
-          {{ user.displayName }}
-          <button
-            id="btn"
-            @click="setLoginUser(user.displayName, user.barance, user.id)"
-          >walletを見る</button>
-          <div
-            id="overlay"
-            v-show="modalForCheckWallets"
-            @click="closeModalForCheckEachUsersWallets"
-          >
-            <div id="content">
-              <form>
-                <p>{{ loginUser.name }}さんの残高</p>
-                <p>{{ loginUser.wallet }}円</p>
-              </form>
-              <button @click="closeModalForCheckEachUsersWallets">close</button>
-            </div>
-          </div>
-          <button id="btn" @click="openModalForSendMoney">送る</button>
-          <div id="overlay" v-show="modalForSendMoney" @click="closeModalForSendMoney">
-            <div id="content" v-for="currentUser in currentUser" :key="currentUser.id" @click.stop>
-              <form>
-                <p>あなたの残高: {{ currentUser.barance }}</p>
-                <p>送る金額</p>
-                <input type="number" label="金額" />
-                <button>送信</button>
-              </form>
-            </div>
-          </div>
+          <v-row>
+            <v-col cols="1">
+              <div></div>
+            </v-col>
+            <v-col cols="6">
+              <p>{{ user.displayName }}</p>
+            </v-col>
+            <v-col cols="5">
+              <v-btn class="primary mr-2" id="btn" @click="getLoginUserWalletAmount(user)">walletを見る</v-btn>
+              <div
+                id="overlay"
+                v-show="modalForCheckWallets"
+                @click="closeModalForCheckEachUsersWallets"
+              >
+                <div id="content">
+                  <v-form>
+                    <p>{{ loginUser.name }}さんの残高</p>
+                    <p>{{ loginUser.wallet }}円</p>
+                    <v-btn small class="red mr-2" @click="closeModalForCheckEachUsersWallets">close</v-btn>
+                  </v-form>
+                </div>
+              </div>
+              <v-btn class="accent" @click="openModalForSendMoney">送る</v-btn>
+              <div id="overlay" v-show="modalForSendMoney" @click="closeModalForSendMoney">
+                <div
+                  id="content"
+                  v-for="currentUser in currentUser"
+                  :key="currentUser.id"
+                  @click.stop
+                >
+                  <v-form>
+                    <p>あなたの残高: {{ currentUser.barance }}</p>
+                    <p>送る金額</p>
+                    <v-text-field type="number" label="金額" v-model.number="sendMoneyAmount" />
+                    <v-btn
+                      small
+                      class="red mr-2"
+                      @click.prevent="sendMoneyForOtherUsers(currentUser.id, currentUser.barance, sendMoneyAmount)"
+                    >送信</v-btn>
+                  </v-form>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
         </li>
       </ul>
-    </div>
-  </div>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      displayName: this.$store.state.displayName,
+      sendMoneyAmount: this.$store.state.sendMoneyAmount,
     };
   },
   computed: {
@@ -75,10 +90,8 @@ export default {
       return this.$store.getters.loginUser;
     },
   },
-  created() {
-    this.$store.dispatch('loginUserDisplay', {
-      displayName: this.displayName,
-    });
+  mounted() {
+    this.$store.dispatch('loginUserDisplay');
   },
   methods: {
     signOut() {
@@ -93,12 +106,29 @@ export default {
     },
     closeModalForCheckEachUsersWallets() {
       this.$store.dispatch('closeModalForCheckEachUsersWallets');
+      this.sendMoneyAmount = 0;
     },
     openModalForSendMoney() {
       this.$store.dispatch('openModalForSendMoney');
     },
     closeModalForSendMoney() {
       this.$store.dispatch('closeModalForSendMoney');
+      this.sendMoneyAmount = 0;
+    },
+    sendMoneyForOtherUsers(id, barance) {
+      this.$store.dispatch('sendMoneyForOtherUsers', {
+        id,
+        barance,
+        sendMoneyAmount: this.sendMoneyAmount,
+      });
+    },
+    getLoginUserWalletAmount(user) {
+      this.$store.dispatch('getLoginUserWalletAmount', {
+        name: user.displayName,
+        barance: user.barance,
+        id: user.id,
+        receivedMoneyAmount: this.sendMoneyAmount,
+      });
     },
   },
 };
@@ -134,5 +164,13 @@ li {
 
 #btn {
   margin: 5px;
+}
+
+.h2 {
+  text-align: center;
+}
+
+h3 {
+  margin-left: 50px;
 }
 </style>
